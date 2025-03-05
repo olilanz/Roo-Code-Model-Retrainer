@@ -13,7 +13,7 @@ def get_logs():
 def create_interface():
     """Create the Gradio interface."""
     with gr.Blocks() as interface:
-        gr.Markdown("# Workflow State Display")
+        gr.Markdown("# Roo Code Model Retrainer")
         workflow_state = gr.Textbox(label="Workflow State", value=get_workflow_state(), interactive=False)
 
         gr.Markdown("# Log Window")
