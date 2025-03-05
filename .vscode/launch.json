@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Gradio Server",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/gradio_server.py",
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      },
+      "args": []
+    }
+  ]
+}

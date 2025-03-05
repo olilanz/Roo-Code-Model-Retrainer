@@ -1,0 +1,23 @@
+# Use a CUDA-enabled base image for GPU support
+FROM nvidia/cuda:12.4.0-runtime-ubuntu20.04
+
+# Set the working directory
+WORKDIR /workspace
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3-pip \
+    && apt-get clean
+
+# Install Python dependencies
+RUN pip install --no-cache-dir gradio
+
+# Copy the project files into the container
+COPY . /workspace
+
+# Expose the Gradio server port
+EXPOSE 7860
+
+# Start the Gradio server automatically
+CMD ["python3", "src/gradio_server.py"]
