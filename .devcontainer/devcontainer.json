@@ -1,16 +1,23 @@
 {
   "name": "Development Container",
+  "containerName": "roo-code-model-retrainer",
   "dockerFile": "../Dockerfile.development",
   "context": "..",
-  "remoteUser": "root",
+  "remoteUser": "vscode",
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash"
   },
   "extensions": [
     "ms-python.python",
     "ms-toolsai.jupyter",
-    "ms-vscode-remote.remote-containers"
+    "ms-vscode-remote.remote-containers",
+    "RooVeterinaryInc.roo-cline",
+    "yzhang.markdown-all-in-one",
+    "bierner.markdown-mermaid",
+    "wjfu99.nvidia-status-bar",
+    "ms-azuretools.vscode-docker"
   ],
+  "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt",
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspace,type=bind",
     "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached"
