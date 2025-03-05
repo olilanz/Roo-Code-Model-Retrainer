@@ -44,6 +44,39 @@ The project follows a modular structure for easy integration and development.
 
 ## Getting Started
 
+### Developing with the Gradio Server
+
+To develop and debug the Gradio server, follow these steps:
+
+1. **Set Up the Devcontainer**:
+   - Ensure Docker is installed on your system.
+   - Open the project in VSCode.
+   - Install the "Remote - Containers" extension in VSCode.
+   - Reopen the project in the container by selecting "Reopen in Container" from the Command Palette.
+
+2. **Debug the Gradio Server**:
+   - Use the VSCode launch configuration provided in `.vscode/launch.json`.
+   - Select "Debug Gradio Server" from the Run and Debug menu in VSCode.
+   - This will start the Gradio server and allow you to debug it interactively.
+
+### Building the Production Container
+
+To build and run the production container for the Gradio server:
+
+1. **Build the Docker Image**:
+   - Run the following command to build the production container:
+     ```bash
+     docker build -t gradio-server -f configs/Dockerfile.production .
+     ```
+
+2. **Run the Container**:
+   - Start the container with GPU support:
+     ```bash
+     docker run --gpus all -p 7860:7860 gradio-server
+     ```
+
+   - This will start the Gradio server and expose it on port 7860.
+
 Follow these steps to get the project up and running:
 
 ### 1. Clone the Repository

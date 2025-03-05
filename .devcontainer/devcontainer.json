@@ -1,6 +1,6 @@
 {
   "name": "Development Container",
-  "dockerFile": "Dockerfile",
+  "dockerFile": "../Dockerfile.development",
   "context": "..",
   "remoteUser": "root",
   "settings": {
