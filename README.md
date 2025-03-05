@@ -55,13 +55,14 @@ git clone https://github.com/olilanz/Roo-Code-Model-Retrainer.git
 cd Roo-Code-Model-Retrainer
 ```
 
-### 2. Set Up Docker (Optional)
+### 2. Set Up the Development Container
 
-If you prefer to work in a Dockerized environment, make sure you have Docker installed and the following Dockerfile in place:
+This project includes a development container with CUDA 12.4 and PyTorch support. To set it up:
 
-```bash
-docker build -t model-training-framework .
-```
+1. Ensure Docker is installed on your system.
+2. Open the project in VSCode.
+3. Install the "Remote - Containers" extension in VSCode.
+4. Reopen the project in the container by selecting "Reopen in Container" from the Command Palette.
 
 ### 3. Install Dependencies
 

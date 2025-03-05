@@ -1,0 +1,20 @@
+{
+  "name": "Development Container",
+  "dockerFile": "Dockerfile",
+  "context": "..",
+  "remoteUser": "root",
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash"
+  },
+  "extensions": [
+    "ms-python.python",
+    "ms-toolsai.jupyter",
+    "ms-vscode-remote.remote-containers"
+  ],
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind"
+  ],
+  "runArgs": [
+    "--gpus=all"
+  ]
+}
