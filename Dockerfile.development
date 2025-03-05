@@ -4,27 +4,19 @@ FROM nvcr.io/nvidia/pytorch:24.02-py3
 # Set up the working directory
 WORKDIR /workspace
 
+# Install system tools (if needed)
+RUN apt update && apt install -y \
+    git curl wget zip unzip \
+    build-essential cmake ninja-build \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install Python dependencies
 COPY requirements.txt /workspace/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install system tools (if needed)
-RUN apt-get update && apt-get install -y \
-    git curl wget zip unzip \
-    build-essential cmake ninja \
-    && rm -rf /var/lib/apt/lists/*
-
-# Expose ports for VSCode
-EXPOSE 3000
-
 # Verify CUDA and PyTorch installation
 RUN nvcc --version && python3 -c "import torch; print(torch.cuda.is_available(), torch.version.cuda)"
 
-# Set default user (optional, improves compatibility with VSCode)
-ARG USERNAME=vscode
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    && chown -R $USERNAME /workspace
-USER $USERNAME
+# Expose ports for VSCode
+EXPOSE 3000
+EXPOSE 7860

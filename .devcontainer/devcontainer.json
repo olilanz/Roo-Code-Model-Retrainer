@@ -1,22 +1,27 @@
 {
   "name": "Development Container",
-  "containerName": "roo-code-model-retrainer",
-  "dockerFile": "../Dockerfile.development",
-  "context": "..",
-  "remoteUser": "vscode",
-  "settings": {
-    "terminal.integrated.defaultProfile.linux": "bash"
+  "build": {
+    "dockerfile": "../Dockerfile.development",
+    "context": ".."
   },
-  "extensions": [
-    "ms-python.python",
-    "ms-toolsai.jupyter",
-    "ms-vscode-remote.remote-containers",
-    "RooVeterinaryInc.roo-cline",
-    "yzhang.markdown-all-in-one",
-    "bierner.markdown-mermaid",
-    "wjfu99.nvidia-status-bar",
-    "ms-azuretools.vscode-docker"
-  ],
+  "remoteUser": "root",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "ms-vscode-remote.remote-containers",
+        "RooVeterinaryInc.roo-cline",
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-mermaid",
+        "wjfu99.nvidia-status-bar",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
   "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt",
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspace,type=bind",
@@ -25,7 +30,7 @@
   "runArgs": [
     "--gpus=all"
   ],
-  "ports": [
-    "7860:7860"
+  "forwardPorts": [
+    7860
   ]
 }

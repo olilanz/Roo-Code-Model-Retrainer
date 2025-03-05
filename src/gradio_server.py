@@ -24,7 +24,7 @@ def create_interface():
 # Main function to launch the Gradio server
 def main():
     interface = create_interface()
-    interface.launch(server_name="0.0.0.0")
+    interface.launch(server_name="0.0.0.0", port=7860)
 
 if __name__ == "__main__":
     main()
