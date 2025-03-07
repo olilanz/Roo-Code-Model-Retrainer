@@ -1,5 +1,9 @@
 import gradio as gr
 from controller.controller import controller
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logging.debug(f"Controller instance: {controller}")
 from controller.logger import setup_logger
 
 # Stub functions for future integration
@@ -19,6 +23,13 @@ def log_window_callback(log_entry):
 
 logger = setup_logger(log_window_callback)
 
+# Helpers for UI interactions
+def download_model(model_link):
+    logger.info(f"Download initiated for model: {model_link}")
+    controller.add_log(f"Download initiated for model: {model_link}")
+    return f"Downloading model: {model_link}"
+
+# Create the Gradio interface layout
 def create_interface():
     """Create the Gradio interface."""
     with gr.Blocks() as interface:
@@ -32,22 +43,34 @@ def create_interface():
 
                 gr.Markdown("### Add a Model")
                 model_link = gr.Textbox(label="Model Link", placeholder="Enter Huggingface model link here")
-                def download_model(model_link):
-                    logger.info(f"Download initiated for model: {model_link}")
-                    controller.add_log(f"Download initiated for model: {model_link}")
-                    return f"Downloading model: {model_link}"
 
                 download_button = gr.Button("Download")
-                download_button.click(download_model, inputs=model_link)
+                download_result = gr.Textbox(label="Download Result", interactive=False)
+                download_button.click(download_model, inputs=model_link, outputs=download_result)
                 cancel_button = gr.Button("Cancel Download")
 
                 gr.Markdown("### Downloaded Models")
+                def fetch_models():
+                    """Fetch models from the controller's in-memory state."""
+                    return controller.models
+
                 models_list = gr.Dataframe(
+                    value=fetch_models(),
                     headers=["Name", "State", "Size (GB)", "Parameters", "Tensor Type"],
                     datatype=["str", "str", "number", "number", "str"],
                     interactive=False
                 )
                 
+                refresh_button = gr.Button("Refresh Models")
+                def refresh_models():
+                    """Refresh the models list in the Gradio UI."""
+                    return controller.models
+
+                refresh_button.click(
+                    lambda: controller.models,
+                    outputs=models_list
+                )
+
                 delete_button = gr.Button("Delete Model")
 
             with gr.Tab("Testing"):
