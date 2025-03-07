@@ -1,19 +1,42 @@
 import gradio as gr
 import logging
 import controller.controller as controller
+import asyncio
 
 logger = logging.getLogger(__name__)
 
-# Create the Gradio interface layout
+# Generic Task Scheduler that manages button locking and async task execution
+async def task_scheduler(task_func, *inputs, button):
+    # Lock the button (disable it) while the task is running
+    button.update(interactive=False)
+
+    try:
+        # Execute the task function asynchronously
+        result = await task_func(*inputs)
+    except Exception as e:
+        logger.error(f"Error during task execution: {e}")
+        result = f"Error: {e}"
+
+    # Once the task completes, unlock the button (enable it)
+    button.update(interactive=True)
+    return result
+
+# Create the ui layout
 def create_ui():
-    """Create the Gradio interface."""
+    """Create the Gradio user interface."""
 
     # Helpers for UI interactions
     def fetch_models():
         """Fetch the list of models and format them for the UI."""
         return [[model["name"], model["state"], model["size_gb"], model["parameters"], model["tensor_type"]] for model in controller.list_models()] 
 
-    with gr.Blocks() as interface:
+    # Helper to download model using the task scheduler
+    async def download_model_task(model_link):
+        logger.info(f"Download initiated for model: {model_link}")
+        await controller.download_model(model_link)
+        return f"Download initiated for model: {model_link}"
+
+    with gr.Blocks() as ui:
         # Title
         gr.Markdown("# Roo Code Model Retrainer")
 
@@ -26,7 +49,13 @@ def create_ui():
                 model_link = gr.Textbox(label="Model Link", placeholder="Enter Huggingface model link here")
 
                 download_button = gr.Button("Download")
-                download_button.click(controller.download_model, inputs=model_link)
+
+                # Pass the download_model_task function into the task_scheduler correctly
+                download_button.click(
+                    task_scheduler, 
+                    inputs=[download_model_task, model_link, download_button], 
+                    outputs=[]
+                )
 
                 gr.Markdown("### Downloaded Models")
                 models_list = gr.Dataframe(
@@ -61,7 +90,7 @@ def create_ui():
         with gr.Row():
             logs = gr.Textbox(label="Logs", value="Lalalalla", interactive=False, elem_id="log-window")
 
-    return interface
+    return ui
 
 # Main function to launch the Gradio server
 def main():
