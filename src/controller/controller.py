@@ -33,7 +33,7 @@ def list_models():
 
 def download_model(model_name):
     """Simulate downloading a model with a delay."""
-    time.sleep(5)  # Simulate a 5-second download delay
+    time.sleep(2)  # Simulate a 5-second download delay
     model = {
         "name": model_name,
         "state": "Downloaded",

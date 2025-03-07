@@ -33,8 +33,8 @@ def create_ui():
     # Helper to download model using the task scheduler
     async def download_model_task(model_link):
         logger.info(f"Download initiated for model: {model_link}")
-        await controller.download_model(model_link)
-        return f"Download initiated for model: {model_link}"
+        controller.download_model(model_link)
+        return None
 
     with gr.Blocks() as ui:
         # Title
@@ -52,8 +52,8 @@ def create_ui():
 
                 # Pass the download_model_task function into the task_scheduler correctly
                 download_button.click(
-                    task_scheduler, 
-                    inputs=[download_model_task, model_link, download_button], 
+                    download_model_task,
+                    inputs=[model_link],
                     outputs=[]
                 )
 
