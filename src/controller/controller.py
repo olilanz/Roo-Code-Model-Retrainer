@@ -31,23 +31,27 @@ def list_models():
     """Return a list of models."""
     return _models
 
-def download_model(model_name):
+def download_model(name):
     """Simulate downloading a model with a delay."""
-    time.sleep(2)  # Simulate a 5-second download delay
+    _logger.info(f"Downloading model {name}...")
+    time.sleep(2)  # Simulate 
     model = {
-        "name": model_name,
+        "name": name,
         "state": "Downloaded",
         "size_gb": 1.0,  # Example size
         "parameters": 1000000000,  # Example parameters
         "tensor_type": "float32"
     }
     _models.append(model)
-    _logger.info(f"Model {model_name} downloaded successfully.")
+    _logger.info(f"Model {name} download completed.")
 
 def remove_model(name):
     """Remove a model from the state."""
+    _logger.info(f"Deleting model {name}...")
     global _models
+    time.sleep(2)  # Simulate
     _models = [model for model in _models if model["name"] != name]
+    _logger.info(f"Model {name} deletion complete.")
 
 def update_model_state(name, state):
     """Update the state of a model."""
