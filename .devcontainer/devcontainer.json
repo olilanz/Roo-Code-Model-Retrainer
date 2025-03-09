@@ -4,6 +4,9 @@
     "dockerfile": "../Dockerfile.development",
     "context": ".."
   },
+  "containerEnv": {
+    "HF_HOME": "/workspace/cache/huggingface"
+  },
   "remoteUser": "root",
   "customizations": {
     "vscode": {
@@ -22,7 +25,7 @@
       ]
     }
   },
-  "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt",
+  "postCreateCommand": "mkdir -p $HF_HOME && pip install --upgrade pip && pip install -r requirements.txt",
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspace,type=bind",
     "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached"
