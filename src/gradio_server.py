@@ -2,9 +2,10 @@ import gradio as gr
 import logging
 import controller.controller as controller
 
-logger = logging.getLogger(__name__)
+MAX_LOGS = 50
 
-logs_buffer = ["lkjlkj", "lkjlkj", "lkjlkj"]
+
+logs_buffer = []
 
 def get_logs():
     return "\n".join(logs_buffer)
@@ -74,36 +75,43 @@ def create_ui():
             release_tab()
             resources_tab()
         with gr.Row():
-            logs = gr.Code(label="Logs", language="shell", every=1, value=get_logs, interactive=False, elem_id="log-window")
+            logs = gr.Code(
+                label="Logs", 
+                language="shell", 
+                every=1, 
+                max_lines=MAX_LOGS, 
+                value=get_logs, 
+                interactive=False)
     return ui
 
-def main():
-
+def setup_log_handler():
+    # log handler to be registered with root logger
     class GradioLogHandler(logging.Handler):
         def __init__(self, output_fn):
             super().__init__()
             self.output_fn = output_fn
-        
+    
         def emit(self, record):
             log_message = self.format(record)
             self.output_fn(log_message)
 
+    # helper that stores all log messages in buffer
     def update_logs(log_message):
+        global logs_buffer
         logs_buffer.append(log_message)  # Append new log message to the list
-        logs_buffer = logs_buffer[-100:]  # Keep the last 100 log messages
-        print("Logs buffer updated:", logs_buffer)
-    
-    # Debugging logger configuration
-    print("Logger level:", logger.level)
-    print("Handlers attached to logger:", logger.handlers)
+        logs_buffer = logs_buffer[-MAX_LOGS:]  # Keep the last 100 log messages
+        
+    # Attach the log handler to the root logger
+    logging.getLogger().addHandler(GradioLogHandler(output_fn=update_logs))
 
+def main():
 
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
 
-    logger.addHandler(GradioLogHandler(output_fn=update_logs))
+    setup_log_handler()
 
     ui = create_ui()
     ui.launch(server_name="0.0.0.0", server_port=7860)
