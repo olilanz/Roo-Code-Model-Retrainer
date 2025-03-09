@@ -2,6 +2,8 @@ import logging
 import time
 import pandas as pd
 
+import model_manager as mm
+
 _logger = logging.getLogger(__name__)
 
 _models = pd.DataFrame([
