@@ -33,8 +33,13 @@ def list_models():
 
 def download_model(name):
     """Simulate downloading a model with a delay."""
+    if not name or name.strip() == "":
+        raise ValueError("Model name is invalid: it cannot be empty or contain only whitespaces.")
+    if any(model["name"] == name for model in _models):
+        raise ValueError(f"Model '{name}' already exists in the list.")
+    
     _logger.info(f"Downloading model {name}...")
-    time.sleep(2)  # Simulate 
+    time.sleep(2)  # Simulate
     model = {
         "name": name,
         "state": "Downloaded",
@@ -47,15 +52,14 @@ def download_model(name):
 
 def remove_model(name):
     """Remove a model from the state."""
-    _logger.info(f"Deleting model {name}...")
     global _models
+
+    if not name or name.strip() == "":
+        raise ValueError("Model name is invalid: it cannot be empty or contain only whitespaces.")
+    if not any(model["name"] == name for model in _models):
+        raise ValueError(f"Model '{name}' does not exist in the list.")
+    
+    _logger.info(f"Deleting model {name}...")
     time.sleep(2)  # Simulate
     _models = [model for model in _models if model["name"] != name]
     _logger.info(f"Model {name} deletion complete.")
-
-def update_model_state(name, state):
-    """Update the state of a model."""
-    for model in _models:
-        if model["name"] == name:
-            model["state"] = state
-            break
