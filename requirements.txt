@@ -1,2 +1,1 @@
-gradio
-colorama
+gradio==5.20.1

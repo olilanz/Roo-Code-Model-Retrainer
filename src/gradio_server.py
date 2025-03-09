@@ -1,9 +1,13 @@
 import gradio as gr
 import logging
 import controller.controller as controller
-import asyncio
 
 logger = logging.getLogger(__name__)
+
+logs_buffer = ["lkjlkj", "lkjlkj", "lkjlkj"]
+
+def get_logs():
+    return "\n".join(logs_buffer)
 
 # Create the UI layout
 def create_ui():
@@ -23,19 +27,19 @@ def create_ui():
                 datatype=["str", "str", "number", "number", "str"],
                 interactive=False
             )
-            gr.Markdown("### Add/remove a Model")
-            with gr.Row():
+            with gr.Accordion("Download or remove models", open=False):
                 model_name = gr.Textbox(placeholder="Enter Huggingface model name", show_label=False)
-                download_button = gr.Button("Download")
-                download_button.click(
-                    controller.download_model,
-                    inputs=[model_name], outputs=[]
-                )
-                delete_button = gr.Button("Delete")
-                delete_button.click(
-                    controller.remove_model,
-                    inputs=[model_name], outputs=[]
-                )
+                with gr.Row():
+                    download_button = gr.Button("Download")
+                    download_button.click(
+                        controller.download_model,
+                        inputs=[model_name], outputs=[]
+                    )
+                    delete_button = gr.Button("Delete")
+                    delete_button.click(
+                        controller.remove_model,
+                        inputs=[model_name], outputs=[]
+                    )
 
     def testing_tab():
         with gr.Tab("Testing"):
@@ -70,15 +74,36 @@ def create_ui():
             release_tab()
             resources_tab()
         with gr.Row():
-            logs = gr.Textbox(label="Logs", value="Lalalalla", interactive=False, elem_id="log-window")
+            logs = gr.Code(label="Logs", language="shell", every=1, value=get_logs, interactive=False, elem_id="log-window")
     return ui
 
 def main():
+
+    class GradioLogHandler(logging.Handler):
+        def __init__(self, output_fn):
+            super().__init__()
+            self.output_fn = output_fn
+        
+        def emit(self, record):
+            log_message = self.format(record)
+            self.output_fn(log_message)
+
+    def update_logs(log_message):
+        logs_buffer.append(log_message)  # Append new log message to the list
+        logs_buffer = logs_buffer[-100:]  # Keep the last 100 log messages
+        print("Logs buffer updated:", logs_buffer)
+    
+    # Debugging logger configuration
+    print("Logger level:", logger.level)
+    print("Handlers attached to logger:", logger.handlers)
+
 
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
+
+    logger.addHandler(GradioLogHandler(output_fn=update_logs))
 
     ui = create_ui()
     ui.launch(server_name="0.0.0.0", server_port=7860)
