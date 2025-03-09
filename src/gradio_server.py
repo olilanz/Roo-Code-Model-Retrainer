@@ -2,9 +2,8 @@ import gradio as gr
 import logging
 import controller.controller as controller
 
+# Storing logs in a buffer 
 MAX_LOGS = 50
-
-
 logs_buffer = []
 
 def get_logs():
@@ -13,19 +12,13 @@ def get_logs():
 # Create the UI layout
 def create_ui():
     """Create the Gradio user interface."""
-    def fetch_models():
-        """Fetch the list of models and format them for the UI."""
-        return [[model["name"], model["state"], model["size_gb"], model["parameters"], model["tensor_type"]]
-                for model in controller.list_models()]
-
+    
     def models_tab():
         with gr.Tab("Models"):
             gr.Markdown("Manage your models here. You can download models from Huggingface for re-training.")
             gr.Markdown("### Downloaded Models")
-            models_list = gr.Dataframe(
-                value=fetch_models,
-                headers=["Name", "State", "Size (GB)", "Parameters", "Tensor Type"],
-                datatype=["str", "str", "number", "number", "str"],
+            models_grid = gr.Dataframe(
+                value=controller.list_models(),  # Populate here before launch
                 interactive=False
             )
             with gr.Accordion("Download or remove models", open=False):
@@ -34,12 +27,12 @@ def create_ui():
                     download_button = gr.Button("Download")
                     download_button.click(
                         controller.download_model,
-                        inputs=[model_name], outputs=[]
-                    )
+                        inputs=[model_name], outputs=[models_grid]
+                    ) 
                     delete_button = gr.Button("Delete")
                     delete_button.click(
                         controller.remove_model,
-                        inputs=[model_name], outputs=[]
+                        inputs=[model_name], outputs=[models_grid]
                     )
 
     def testing_tab():
