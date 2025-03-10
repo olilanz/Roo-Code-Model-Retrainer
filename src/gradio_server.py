@@ -15,12 +15,12 @@ def create_ui():
     
     def models_tab():
         with gr.Tab("Models"):
-            gr.Markdown("Manage your models here. You can download models from Huggingface for re-training.")
             gr.Markdown("### Downloaded Models")
             models_grid = gr.Dataframe(
                 value=controller.list_models(),  # Populate here before launch
                 interactive=False
             )
+            gr.Markdown("Manage your models here. You can download models from Huggingface for re-training. Provide the name of the model (e.g. Qwen/QwQ-32B) and press teh download button. You can also remove models by providing the model name and pressing the delete button.")
             with gr.Accordion("Download or remove models", open=False):
                 model_name = gr.Textbox(placeholder="Enter Huggingface model name", show_label=False)
                 with gr.Row():
@@ -32,7 +32,7 @@ def create_ui():
                     delete_button = gr.Button("Delete")
                     delete_button.click(
                         controller.remove_model,
-                        inputs=[model_name], outputs=[models_grid]
+                        inputs=[model_name], outputs=[models_grid],
                     )
 
     def testing_tab():
