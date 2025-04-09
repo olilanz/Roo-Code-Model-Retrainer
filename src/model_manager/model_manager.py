@@ -23,8 +23,8 @@ def download_model(model_name: str) -> None:
     try:
         logging.info(f"Starting download for model: {model_name}")
         model_path = Path(HF_HOME) / model_name
-        AutoModel.from_pretrained(model_name, cache_dir=model_path)
-        AutoTokenizer.from_pretrained(model_name, cache_dir=model_path)
+        AutoModel.from_pretrained(model_name, cache_dir=model_path, trust_remote_code=True)
+        AutoTokenizer.from_pretrained(model_name, cache_dir=model_path, trust_remote_code=True)
         logging.info(f"Model '{model_name}' downloaded successfully to {model_path}")
     except Exception as e:
         logging.error(f"Failed to download model '{model_name}': {e}")
@@ -60,7 +60,7 @@ def list_models() -> list:
                 try:
                     config_path = next(model_dir.glob("**/config.json"), None)
                     if config_path and config_path.exists():
-                        config = AutoConfig.from_pretrained(config_path)
+                        config = AutoConfig.from_pretrained(config_path, trust_remote_code=True)
                     metadata.update({
                         "model_type": getattr(config, "model_type", "N/A"),
                         "model_architectures": getattr(config, "architectures", "N/A"),
